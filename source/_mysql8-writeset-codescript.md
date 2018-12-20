@@ -254,3 +254,21 @@ static void generate_hash_pke(const std::string &pke, THD *thd) {
       thd->get_transaction()->get_transaction_write_set_ctx()->add_write_set(hash);
 }
 ```
+
+
+
+```sql 
+select count(1) from (SELECT T.account_id FROM tb_refund_change T group by T.account_id ) a
+explain select count(1) from (SELECT T.account_id FROM tb_refund_change T group by T.account_id ) a ;
++----+-------------+------------+------------+------+---------------+------+---------+------+---------+----------+---------------------------------+
+| id | select_type | table      | partitions | type | possible_keys | key  | key_len | ref  | rows    | filtered | Extra                           |
++----+-------------+------------+------------+------+---------------+------+---------+------+---------+----------+---------------------------------+
+|  1 | PRIMARY     | <derived2> | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 3622086 |   100.00 | NULL                            |
+|  2 | DERIVED     | T          | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 3622086 |   100.00 | Using temporary; Using filesort |
++----+-------------+------------+------------+------+---------------+------+---------+------+---------+----------+---------------------------------+
+
+select T.account_id from tb_refund_change T group by T.account_id order by T.account_id limit 121300,800 ;
+
+
+
+```
